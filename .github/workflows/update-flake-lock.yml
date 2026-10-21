@@ -1,0 +1,36 @@
+name: "Update flake.lock"
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '37 6 * * *'
+      timezone: "America/Chicago"
+
+concurrency:
+  group: update-flake-lock
+  cancel-in-progress: true
+
+jobs:
+  update-flake-lock:
+    permissions:
+      contents: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+      - name: Install Determinate Nix
+        uses: DeterminateSystems/determinate-nix-action@v3
+        with:
+          kvm: false
+      - name: Update flake.lock
+        id: update-flake-lock
+        uses: DeterminateSystems/update-flake-lock@v29
+      - name: Approve and auto-merge
+        if: ${{ steps.update-flake-lock.outputs.pull-request-number != '' }}
+        run: |
+          gh pr review --approve "$PR"
+          gh pr merge --auto --merge "$PR"
+        env:
+          PR: ${{ steps.update-flake-lock.outputs.pull-request-number }}
+          GH_TOKEN: ${{ secrets.TKN }}
