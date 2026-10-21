@@ -26,6 +26,8 @@ jobs:
       - name: Update flake.lock
         id: update-flake-lock
         uses: DeterminateSystems/update-flake-lock@v29
+        with:
+          token: ${{ secrets.TKN }}
       - name: Approve and auto-merge
         if: ${{ steps.update-flake-lock.outputs.pull-request-number != '' }}
         run: |
