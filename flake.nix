@@ -62,6 +62,11 @@
           julia-bin
           R
 
+          # Data and database tools
+          duckdb
+          parquet-tools
+          sqlite
+
           # Polyhedral geometry and optimisation
           polymake
           normaliz
